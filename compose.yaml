@@ -1,0 +1,32 @@
+services:
+  app:
+    build: .
+    ports:
+      - "5001:5001"
+    environment:
+      - DB_HOST=db
+      - DB_NAME=technical_support
+      - DB_USER=postgres
+      - DB_PASS=123456789
+      - DB_PORT=5432
+    depends_on:
+      - db
+    volumes:
+      - ./static:/app/static
+      - ./templates:/app/templates
+    restart: always
+
+  db:
+    image: postgres:13
+    environment:
+      - POSTGRES_DB=technical_support
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=123456789
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "5434:5433"
+
+volumes:
+  postgres_data:

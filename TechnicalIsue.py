@@ -7,16 +7,19 @@ import psycopg2
 import psycopg2.extras
 # Importamos datetime para manejar fechas
 from datetime import datetime
+import logging
+import os
+
 
 # Creación de la aplicación Flask
 app = Flask(__name__)
 
-# Configuración de la base de datos PostgreSQL
-DB_HOST = "localhost"
-DB_NAME = "technical_support"  
-DB_USER = "postgres"  
-DB_PASS = "123456789"  
-DB_PORT = "5432"  
+# Configuración de la base de datos PostgreSQL usando variables de entorno
+DB_HOST = os.environ.get("DB_HOST", "localhost")
+DB_NAME = os.environ.get("DB_NAME", "technical_support")
+DB_USER = os.environ.get("DB_USER", "postgres")
+DB_PASS = os.environ.get("DB_PASS", "123456789")
+DB_PORT = os.environ.get("DB_PORT", "5432")
 
 # Función para conectar a la base de datos
 def get_db_connection():
@@ -35,7 +38,6 @@ def get_db_connection():
 @app.route('/', methods=['GET'])
 def get_welcome():
     return render_template('index.html')
-
 
 
 # Endpoint para obtener un incidente específico por ID
@@ -194,8 +196,9 @@ def delete_incident(incident_id):
     return '', 204
 
 
-# Iniciamos la aplicación en modo debug en el puerto 5000.
-if __name__ == '__main__':
-    app.run(debug=True, port=5000)
-
+# Iniciamos la aplicación en modo debug y para que escuche en todas las interfaces
+if __name__ == "__main__":
+    port = 5001
+    logging.warning(f"Accede a la aplicación en http://localhost:{5001}")
+    app.run(host="0.0.0.0", port=port, debug=True)
 
