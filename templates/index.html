@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Incidentes</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
+        h1, h2 { color: #333; }
+        #create-form { background: #f5f5f5; padding: 15px; border-radius: 5px; margin-bottom: 20px; }
+        .form-group { margin-bottom: 10px; }
+        label { display: block; margin-bottom: 5px; }
+        input, textarea, select { width: 100%; padding: 8px; box-sizing: border-box; }
+        button { padding: 8px 15px; background: #4CAF50; color: white; border: none; cursor: pointer; }
+        button.delete { background: #f44336; }
+        .incident { background: white; padding: 15px; margin-bottom: 10px; border: 1px solid #ddd; border-radius: 5px; }
+        .status-pendiente { color: orange; }
+        .status-en-proceso { color: blue; }
+        .status-resuelto { color: green; }
+        .action-buttons { margin-top: 10px; }
+    </style>
+</head>
+<body>
+    <h1>Sistema de Gestión de Incidentes</h1>
+    
+    <!-- Formulario para crear incidentes -->
+    <div id="create-form">
+        <h2>Reportar Nuevo Incidente</h2>
+        <form id="incident-form">
+            <div class="form-group">
+                <label for="reporter">Reportado por:</label>
+                <input type="text" id="reporter" required>
+            </div>
+            <div class="form-group">
+                <label for="description">Descripción:</label>
+                <textarea id="description" rows="3" required></textarea>
+            </div>
+            <button type="submit">Crear Incidente</button>
+        </form>
+    </div>
+    
+    <!-- Lista de incidentes -->
+    <h2>Lista de Incidentes</h2>
+    <div id="incidents-container">
+        <p id="loading">Cargando incidentes...</p>
+    </div>
+    
+    <script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>

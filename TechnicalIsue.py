@@ -1,5 +1,6 @@
 
 #Importamos Flask para crear la API Web
+from flask import render_template
 from flask import Flask, request, jsonify
 # Importamos psycopg2 para conectarnos a PostgreSQL
 import psycopg2
@@ -33,163 +34,7 @@ def get_db_connection():
 
 @app.route('/', methods=['GET'])
 def get_welcome():
-    return """
-    <html>
-        <head>
-            <title>API Incidentes - Rutas</title>
-            <style>
-                body {
-                    font-family: Arial, sans-serif;
-                    background-color: #f4f4f4;
-                    margin: 0;
-                    padding: 20px;
-                }
-                h1 {
-                    color: #333;
-                }
-                ul {
-                    list-style-type: none;
-                    padding: 0;
-                }
-                li {
-                    margin: 20px 0;
-                }
-                a {
-                    text-decoration: none;
-                    color: #007BFF;
-                    font-weight: bold;
-                }
-                a:hover {
-                    text-decoration: underline;
-                }
-                .container {
-                    max-width: 800px;
-                    margin: 0 auto;
-                    background: #fff;
-                    padding: 20px;
-                    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-                    border-radius: 8px;
-                }
-                .description {
-                    color: #555;
-                    font-size: 14px;
-                }
-                code {
-                    color: #d32baf;
-                    font-family: Consolas, monospace;
-                }
-                pre {
-                    background-color: #fafafa;
-                    padding: 10px;
-                    border-radius: 5px;
-                    border: 1px solid #ddd;
-                }
-            </style>
-        </head>
-        <body>
-            <div class="container">
-                <h1>API de Incidentes - Rutas Disponibles</h1>
-                <ul>
-                    <li>
-                        <a href="/incidents">GET /incidents</a>
-                        <p class="description">
-                            Obtiene la lista de todos los incidentes.<br>
-                            <strong>Respuesta (JSON):</strong>
-                        </p>
-                        <pre>
-[
-  {
-    "id": 1,
-    "reporter": "Juan Pérez",
-    "description": "La impresora no imprime en color.",
-    "status": "pendiente",
-    "created_at": "2025-03-28T12:00:00"
-  },
-  ...
-]
-                        </pre>
-                    </li>
-
-                    <li>
-                        <a href="/incidents/1">GET /incidents/&lt;int:incident_id&gt;</a>
-                        <p class="description">
-                            Obtiene un incidente específico por su ID.<br>
-                            <strong>Respuesta (JSON):</strong>
-                        </p>
-                        <pre>
-{
-  "id": 1,
-  "reporter": "Juan Pérez",
-  "description": "La impresora no imprime en color.",
-  "status": "pendiente",
-  "created_at": "2025-03-28T12:00:00"
-}
-                        </pre>
-                    </li>
-
-                    <li>
-                        <strong>POST /incidents</strong>
-                        <p class="description">
-                            Crea un nuevo incidente.<br>
-                            <strong>Cuerpo de la petición (JSON):</strong>
-                        </p>
-                        <pre>
-{
-  "reporter": "Carlos",
-  "description": "La conexión es intermitente"
-}
-                        </pre>
-                        <p class="description">
-                            <strong>Respuesta (JSON):</strong> Incidente recién creado con su ID, status="pendiente" y created_at.
-                        </p>
-                        <pre>
-{
-  "id": 3,
-  "reporter": "Carlos",
-  "description": "La conexión es intermitente",
-  "status": "pendiente",
-  "created_at": "2025-03-28T13:00:00"
-}
-                        </pre>
-                    </li>
-
-                    <li>
-                        <strong>PUT /incidents/&lt;int:incident_id&gt;</strong>
-                        <p class="description">
-                            Actualiza el estado de un incidente.<br>
-                            <strong>Cuerpo de la petición (JSON):</strong>
-                        </p>
-                        <pre>
-{
-  "status": "en proceso"
-}
-                        </pre>
-                        <p class="description">
-                            <strong>Respuesta (JSON):</strong> El incidente actualizado.
-                        </p>
-                        <pre>
-{
-  "id": 1,
-  "reporter": "Juan Pérez",
-  "description": "La impresora no imprime en color.",
-  "status": "en proceso",
-  "created_at": "2025-03-28T12:00:00"
-}
-                        </pre>
-                    </li>
-
-                    <li>
-                        <strong>DELETE /incidents/&lt;int:incident_id&gt;</strong>
-                        <p class="description">
-                            Elimina un incidente reportado por error.<br>
-                            <strong>Respuesta:</strong> Código de estado <code>204 No Content</code> si la operación es exitosa.
-                        </p>
-                    </li>
-                </ul>
-            </div>
-        </body>
-    </html>
-    """
+    return render_template('index.html')
 
 
 
@@ -241,7 +86,6 @@ def get_incidents():
 # Crear incidentes en formato JSON
 @app.route('/incidents', methods=['POST'])
 def create_incident():
-    # Convertimos todas las fechas a formato ISO
     data = request.json or {}
 
     # Validación 1: Verifica si existe el campo 'reporter'
