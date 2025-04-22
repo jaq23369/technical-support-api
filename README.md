@@ -270,3 +270,113 @@ def delete_incident(incident_id):
 
 
 -------------------------------------------------------------------------------------------------------
+
+Docker
+
+Prerrequisitos:
+-Docker Desktop (Siempre tenerlo abierto para que funcionen los comandos)
+
+Levantar la API con Docker:
+
+# 1. Clonar el repositorio
+git clone https://github.com/jaq23369/technical-support-api.git
+
+# 2. Acceder a la carpeta donde clonaste el repositorio desde VScode
+
+# 3. Construir, levantar y detener los contenedores
+Primero ejecutar: docker-compose up --build
+Segundo: Luego de que se contruya el docker verás este mensaje: Accede a la aplicación en http://localhost:5001, aquí es donde puedes probar la API
+Tercero: Una vez probadad la API regresa a VScode y ejecuta el comando CRTL + C para detener los contenedores
+Cuarto: Ejecuta este comando: docker-compose down para detenerlo definitivamente.
+
+------------------------------------------------------------------------------------------------------
+
+Descripción de archivos de configuración
+
+------------------------------------------------------------------------------------------------------
+
+docker-compose.yml:
+
+Servicios:
+
+app: Aplicación Flask.
+
+db: Base de datos PostgreSQL.
+
+build: . construye la imagen usando el Dockerfile en la raíz.
+
+ports: "5001:5001" expone el puerto 5001 del contenedor en el host.
+
+environment: variables de conexión a PostgreSQL (DB_HOST, DB_NAME, DB_USER, DB_PASS, DB_PORT).
+
+depends_on: arranca primero el servicio db.
+
+volumes:
+
+./static:/app/static y ./templates:/app/templates para recarga de archivos estáticos en caliente.
+
+restart: always reinicia el contenedor app si falla.
+
+------------------------------------------------------------------------------------------------------
+
+El servicio db:
+
+image: postgres:13 usa PostgreSQL v13.
+
+environment: define POSTGRES_DB, POSTGRES_USER y POSTGRES_PASSWORD.
+
+volumes:
+
+postgres_data persiste datos en un volumen Docker.
+
+./init.sql se ejecuta al iniciar para poblar la tabla incidents.
+
+ports: "5434:5433" mapea internamente el puerto 5433 al 5434 en el host.
+
+------------------------------------------------------------------------------------------------------
+
+Dockerfile:
+
+Base: python:3.9-slim para una imagen ligera.
+
+ENV PYTHONDONTWRITEBYTECODE=1: evita archivos .pyc.
+
+ENV PYTHONUNBUFFERED=1: no bufferiza la salida.
+
+Usuario: crea appuser (UID 10001) para mayor seguridad.
+
+Dependencias: instala según requirements.txt con caché de pip.
+
+Directorios: crea static y templates y cede permisos al usuario.
+
+Copia el código al contenedor y ajusta permisos.
+
+USER appuser: no se ejecuta como root.
+
+EXPOSE 5001: puerto que escucha Flask.
+
+CMD ["python", "TechnicalIsue.py"]: comando de arranque.
+
+------------------------------------------------------------------------------------------------------
+
+init.sql:
+
+Script SQL que monta la base de datos al arrancar.
+
+Crea la tabla incidents con campos id, reporter, description, status, created_at.
+
+Inserta 20 registros de ejemplo para pruebas.
+
+------------------------------------------------------------------------------------------------------
+
+requirements.txt:
+
+Lista de librerías Python necesarias:
+
+Flask==2.0.1: microframework web.
+
+Werkzeug==2.0.3: servidor WSGI.
+
+psycopg2-binary==2.9.1: driver PostgreSQL.
+
+------------------------------------------------------------------------------------------------------
